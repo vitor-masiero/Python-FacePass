@@ -3,9 +3,11 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-miv@m)iidfq1cpiil9x19!)!e_qh-jl(jay=d=qpuq$r9w$8&@'
+SECRET_KEY = config('DJANGO_SECRET_KEY', default='change-me-only-for-local-dev')
 
-ALLOWED_HOSTS = []
+DEBUG = config('DEBUG', cast=bool, default=True)
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -66,11 +68,11 @@ WSGI_APPLICATION = 'servidor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sistema_gestao_entrada', 
-        'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST' : 'localhost',
-        'PORT': '5432',
+        'NAME': config('DATABASE_NAME', default='sistema_gestao_entrada'),
+        'USER': config('DATABASE_USER', default='postgres'),
+        'PASSWORD': config('DATABASE_PASSWORD', default='postgres'),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
     }
 }
 
@@ -103,11 +105,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
-    "http://72.14.201.202:8000",
 ]
-CORS_ALLOW_ALL_ORIGINS = True
-
-ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', cast=bool, default=False)
 
 #Email
 EMAIL_BACKEND = config('EMAIL_BACKEND')
@@ -123,5 +122,3 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
 import os
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
-DEBUG = True
